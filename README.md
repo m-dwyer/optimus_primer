@@ -1,8 +1,6 @@
 # OptimusPrimer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/optimus_primer`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A simple gem and associated command line tool to allow switching between Intel and dedicated Nvidia GPUs in Optimus configurations.
 
 ## Installation
 
@@ -22,7 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+`bin/optimus-primer -m intel|nvidia`
+
+Reboot, and the selected GPU will be in use.  Confirm this with `glxinfo | grep render`
 
 ## Development
 
@@ -32,7 +32,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/optimus_primer.
+Bug reports and pull requests are welcome on GitHub at https://github.com/m-dwyer/optimus_primer.
 
 ## License
 
