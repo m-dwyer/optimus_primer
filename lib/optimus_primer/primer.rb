@@ -30,23 +30,23 @@ module OptimusPrimer
       # create/remove blacklist file
       if enable
         $stdout.puts "Copying blacklist conf #{@config[:nvidia][:blacklist_conf]} to #{@config[:nvidia][:blacklist_file]}"
-        File.copy_stream(@config[:nvidia][:blacklist_conf], @config[:nvidia][:blacklist_file])
+        File.copy_stream(@config[:nvidia][:blacklist_conf], @config[:nvidia][:blacklist_file]) if @config[:nvidia][:blacklist_conf]
       else
         $stdout.puts "Removing blacklist file #{@config[:nvidia][:blacklist_file]}"
-        File.delete(@config[:nvidia][:blacklist_file])
+        File.delete(@config[:nvidia][:blacklist_file]) if File.exists? @config[:nvidia][:blacklist_file]
       end
 
       true
     end
 
     def enable_power_management(enable = true)
+      nvidia_card = @nvidia_displays[0]
       if enable
-        nvidia_card = @nvidia_displays[0]
         $stdout.puts "Enabling nvidia power management on #{nvidia_card[:pci_domain_bdf]}"
-        #@pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'auto')
+        @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'auto')
       else
         $stdout.puts "Disabling nvidia power management"
-        #@pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'on')
+        @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'on')
       end
     end
   end
