@@ -5,6 +5,7 @@ module OptimusPrimer
     DISPLAY_DEVICE_CLASS = '03'.freeze
     INTEL_VENDOR_BUS_ID = '8086'.freeze
     NVIDIA_VENDOR_BUS_ID = '10de'.freeze
+    POWER_PATH = 'power/control'.freeze
 
     def bus_id
       display_controllers
@@ -18,7 +19,19 @@ module OptimusPrimer
       [intel_controllers, nvidia_controllers]
     end
 
+    def write_pci_path(device, path, value)
+      File.write(pci_path(device, path), value)
+    end
+
+    def read_pci_path(device, path, value)
+      File.read(pci_path(device, path), value)
+    end
+
     private
+
+    def pci_path(device, path)
+      "/sys/bus/pci/devices/%{device}/%{path}" % { device: device, path: path }
+    end
 
     def group_by(obj, *keys)
       groups = obj.group_by { |h| h[keys.first] }
@@ -46,14 +59,6 @@ module OptimusPrimer
       end
 
       devices
-    end
-
-    def write_path(path, value)
-      File.write(path, value)
-    end
-
-    def read_path(path, value)
-      File.read(path, value)
     end
   end
 end
