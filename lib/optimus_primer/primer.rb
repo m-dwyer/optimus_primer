@@ -30,8 +30,10 @@ module OptimusPrimer
       # create/remove blacklist file
       if enable
         $stdout.puts "Copying blacklist conf #{@config[:nvidia][:blacklist_conf]} to #{@config[:nvidia][:blacklist_file]}"
+        File.copy_stream(@config[:nvidia][:blacklist_conf], @config[:nvidia][:blacklist_file])
       else
         $stdout.puts "Removing blacklist file #{@config[:nvidia][:blacklist_file]}"
+        File.delete(@config[:nvidia][:blacklist_file])
       end
 
       true

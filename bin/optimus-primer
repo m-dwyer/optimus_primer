@@ -23,7 +23,7 @@ begin
   end.parse!
   raise OptionParser::MissingArgument.new("mode argument is required") unless options.key? :mode
 
-  config = OptimusPrimer::Config.load(options[:config_file] || 'primer.conf')
+  config = OptimusPrimer::Config.load(options[:config_file] || 'conf/primer.conf')
   primer = OptimusPrimer::Primer.new(config)
   primer.switch(options[:mode])
 rescue StandardError => e
