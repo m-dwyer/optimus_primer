@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'optimus_primer'
+
+begin
+  options = {}
+  OptionParser.new do |opts|
+    opts.banner = 'Usage: optimus-primer [options]'
+    opts.on('-h', '--help', 'Prints this help') do
+      puts opts
+      exit
+    end
+
+    opts.on('-m MODE', '--mode MODE', '[intel|nvidia]') do |mode|
+      raise OptionParser::InvalidArgument.new("Must be one of [intel|nvidia]") unless OptimusPrimer::MODES.include? mode.strip
+      options[:mode] = mode.strip
+    end
+
+    opts.on('-f FILE', '--file FILE', '[config file]') do |config_file|
+      options[:config_file]
+    end
+  end.parse!
+  raise OptionParser::MissingArgument.new("mode argument is required") unless options.key? :mode
+
+  config = OptimusPrimer::Config.load(options[:config_file] || 'primer.conf')
+  primer = OptimusPrimer::Primer.new(config)
+  primer.switch(options[:mode])
+rescue StandardError => e
+  $stderr.puts e.message
+  $stderr.puts e.backtrace
+  exit 1
+end
