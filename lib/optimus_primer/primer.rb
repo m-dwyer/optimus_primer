@@ -8,12 +8,10 @@ module OptimusPrimer
 
   class Primer
     def initialize(config)
-
+      @intel_displays, @nvidia_displays = displays
     end
 
     def switch(mode)
-      @intel_displays, @nvidia_displays = displays
-
       case mode
       when 'intel'
         blacklist_nvidia

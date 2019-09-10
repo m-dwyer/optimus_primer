@@ -12,9 +12,8 @@ module OptimusPrimer
 
     def display_controllers
       grouped_devices = group_by(all_devices, :pci_class_id, :vendor_id)
-      display_controllers = grouped_devices.select { |d| d.start_with? DISPLAY_DEVICE_CLASS }.values
-      intel_controllers = display_controllers.select { |d| d[INTEL_VENDOR_BUS_ID] }
-      nvidia_controllers = display_controllers.select { |d| d[NVIDIA_VENDOR_BUS_ID] }
+      intel_controllers = grouped_devices.dig(DISPLAY_DEVICE_CLASS, INTEL_VENDOR_BUS_ID)
+      nvidia_controllers = grouped_devices.dig(DISPLAY_DEVICE_CLASS, NVIDIA_VENDOR_BUS_ID)
 
       [intel_controllers, nvidia_controllers]
     end
@@ -33,7 +32,7 @@ module OptimusPrimer
       `lspci -Dn`.split("\n").each_with_object(devices) do |line, accum|
         pci_line = line.split("\s")
         pci_domain_bdf = pci_line[0]
-        pci_class_id = pci_line[1].match(/^([a-f\d]+)\:$/)[1]
+        pci_class_id = pci_line[1].match(/^([a-f\d]{2})[a-f\d]{2}\:$/)[1]
         vendor_device = pci_line[2].split(':')
         vendor_id = vendor_device[0]
         device_id = vendor_device[1]
