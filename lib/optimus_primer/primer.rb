@@ -35,8 +35,6 @@ module OptimusPrimer
         $stdout.puts "Removing blacklist file #{@config[:nvidia][:blacklist_file]}"
         File.delete(@config[:nvidia][:blacklist_file]) if File.exists? @config[:nvidia][:blacklist_file]
       end
-
-      true
     end
 
     def enable_power_management(enable = true)
