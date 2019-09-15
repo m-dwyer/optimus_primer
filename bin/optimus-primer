@@ -16,16 +16,11 @@ begin
       raise OptionParser::InvalidArgument.new("Must be one of [intel|nvidia]") unless OptimusPrimer::MODES.include? mode.strip
       options[:mode] = mode.strip
     end
-
-    opts.on('-f FILE', '--file FILE', '[config file]') do |config_file|
-      options[:config_file]
-    end
   end.parse!
-  raise OptionParser::MissingArgument.new("mode argument is required") unless options.key? :mode
-
-  config = OptimusPrimer::Config.load(options[:config_file] || 'conf/primer.conf')
+  
+  config = OptimusPrimer::Config.load('primer.conf')
   primer = OptimusPrimer::Primer.new(config)
-  primer.switch(options[:mode])
+  primer.switch(options[:mode] || File.read(OptimusPrimer::Config::current_mode_path))
 rescue StandardError => e
   $stderr.puts e.message
   $stderr.puts e.backtrace

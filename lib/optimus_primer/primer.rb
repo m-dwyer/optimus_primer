@@ -19,10 +19,12 @@ module OptimusPrimer
         blacklist_nvidia
         set_xorg_config('intel')
         enable_power_management
+        write_current_mode('intel')
       when 'nvidia'
         blacklist_nvidia(false)
         set_xorg_config('nvidia')
         enable_power_management(false)
+        write_current_mode('nvidia')
       end
     end
 
@@ -64,6 +66,10 @@ module OptimusPrimer
 
         $stdout.puts "Copying nvidia config #{@config[:nvidia][:xorg_conf]} to #{@config[:nvidia][:xorg_file]}"
         File.copy_stream(@config[:nvidia][:xorg_conf], @config[:nvidia][:xorg_file]) if @config[:nvidia][:xorg_conf]
+      end
+
+      def write_current_mode(mode)
+        File.write(Config::current_mode_path, mode)
       end
     end
   end
