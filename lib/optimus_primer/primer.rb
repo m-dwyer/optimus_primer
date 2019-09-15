@@ -17,9 +17,11 @@ module OptimusPrimer
       case mode
       when 'intel'
         blacklist_nvidia
+        set_xorg_config('intel')
         enable_power_management
       when 'nvidia'
         blacklist_nvidia(false)
+        set_xorg_config('nvidia')
         enable_power_management(false)
       end
     end
@@ -45,6 +47,23 @@ module OptimusPrimer
       else
         $stdout.puts "Disabling nvidia power management"
         @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'on')
+      end
+    end
+
+    def set_xorg_config(mode)
+      case mode
+      when 'intel'
+        $stdout.puts "Copying intel config #{@config[:intel][:xorg_conf]} to #{@config[:intel][:xorg_file]}"
+        File.copy_stream(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
+
+        $stdout.puts "Removing nvidia config #{@config[:nvidia][:xorg_file]}"
+        File.delete(@config[:nvidia][:xorg_file]) if File.exists? @config[:nvidia][:xorg_file]
+      when 'nvidia'
+        $stdout.puts "Copying intel config #{@config[:intel][:xorg_conf]} to #{@config[:intel][:xorg_file]}"
+        File.copy_stream(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
+
+        $stdout.puts "Copying nvidia config #{@config[:nvidia][:xorg_conf]} to #{@config[:nvidia][:xorg_file]}"
+        File.copy_stream(@config[:nvidia][:xorg_conf], @config[:nvidia][:xorg_file]) if @config[:nvidia][:xorg_conf]
       end
     end
   end
