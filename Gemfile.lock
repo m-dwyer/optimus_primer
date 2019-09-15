@@ -21,7 +21,7 @@ DEPENDENCIES
   debase (= 0.2.3.beta5)
   optimus_primer!
   rake (~> 10.0)
-  ruby-debug-ide
+  ruby-debug-ide (~> 0.7.0)
 
 BUNDLED WITH
    2.0.2
