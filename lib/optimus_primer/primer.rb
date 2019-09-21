@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative 'pci'
+require 'fileutils'
 
 module OptimusPrimer
   class Error < StandardError; end
@@ -34,7 +35,7 @@ module OptimusPrimer
       # create/remove blacklist file
       if enable
         $stdout.puts "Copying blacklist conf #{@config[:nvidia][:blacklist_conf]} to #{@config[:nvidia][:blacklist_file]}"
-        File.copy_stream(@config[:nvidia][:blacklist_conf], @config[:nvidia][:blacklist_file]) if @config[:nvidia][:blacklist_conf]
+        copy_file(@config[:nvidia][:blacklist_conf], @config[:nvidia][:blacklist_file]) if @config[:nvidia][:blacklist_conf]
       else
         $stdout.puts "Removing blacklist file #{@config[:nvidia][:blacklist_file]}"
         File.delete(@config[:nvidia][:blacklist_file]) if File.exists? @config[:nvidia][:blacklist_file]
@@ -56,21 +57,26 @@ module OptimusPrimer
       case mode
       when 'intel'
         $stdout.puts "Copying intel config #{@config[:intel][:xorg_conf]} to #{@config[:intel][:xorg_file]}"
-        File.copy_stream(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
+        copy_file(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
 
         $stdout.puts "Removing nvidia config #{@config[:nvidia][:xorg_file]}"
         File.delete(@config[:nvidia][:xorg_file]) if File.exists? @config[:nvidia][:xorg_file]
       when 'nvidia'
         $stdout.puts "Copying intel config #{@config[:intel][:xorg_conf]} to #{@config[:intel][:xorg_file]}"
-        File.copy_stream(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
+        copy_file(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
 
         $stdout.puts "Copying nvidia config #{@config[:nvidia][:xorg_conf]} to #{@config[:nvidia][:xorg_file]}"
-        File.copy_stream(@config[:nvidia][:xorg_conf], @config[:nvidia][:xorg_file]) if @config[:nvidia][:xorg_conf]
+        copy_file(@config[:nvidia][:xorg_conf], @config[:nvidia][:xorg_file]) if @config[:nvidia][:xorg_conf]
       end
 
       def write_current_mode(mode)
         File.write(Config::current_mode_path, mode)
       end
+    end
+
+    def copy_file(src, dest)
+      FileUtils.mkdir_p(File.dirname(dest))
+      FileUtils.copy_file(src, dest)
     end
   end
 end
