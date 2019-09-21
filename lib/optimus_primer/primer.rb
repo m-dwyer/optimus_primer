@@ -47,9 +47,13 @@ module OptimusPrimer
       if enable
         $stdout.puts "Enabling nvidia power management on #{nvidia_card[:pci_domain_bdf]}"
         @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'auto')
+        $stdout.puts "Enabling nvidia power management udev rule"
+        copy_file(@config[:nvidia][:power_udev_conf], @config[:nvidia][:power_udev_file])
       else
         $stdout.puts "Disabling nvidia power management"
         @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'on')
+        $stdout.puts "Disabling nvidia power management udev rule"
+        File.delete(@config[:nvidia][:power_udev_file]) if File.exists? @config[:nvidia][:power_udev_file]
       end
     end
 
