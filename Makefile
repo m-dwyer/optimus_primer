@@ -10,4 +10,3 @@ install:
 	echo 'intel' > ${CONFIG_DIR}/current_mode
 	gem build optimus_primer
 	gem install --local --force --no-user-install --bindir /usr/bin *.gem
-	cp optimus-primer.service /usr/lib/systemd/system/optimus-primer.service
