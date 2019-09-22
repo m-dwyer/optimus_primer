@@ -5,16 +5,17 @@ require_relative 'options/nvidia_gpu_remove_options'
 
 module OptimusPrimer
   class OptionsBuilder
-    OPTION_KEY_TEMPLATE_MAP = {
-      %i(nvidia power_udev_conf) => NvidiaUDevOptions,
-      %i(nvidia power_management acpi_call_set_conf) => NvidiaAcpiOptions,
-      %i(nvidia power_management pci_remove_conf) => NvidiaGpuRemoveOptions
+    FEATURE_OPTIONS_MAP = {
+      :gpu => NvidiaUDevOptions,
+      :other => NvidiaUDevOptions,
+      :acpi => NvidiaAcpiOptions,
+      :pci_removal => NvidiaGpuRemoveOptions
     }.freeze
     PASSTHROUGH_OPTIONS = GenericOptions
 
     class << self
-      def build_options(*option_key, config, contents)
-        klass = OPTION_KEY_TEMPLATE_MAP.fetch(option_key, PASSTHROUGH_OPTIONS)
+      def build_options(feature_name, config, contents)
+        klass = FEATURE_OPTIONS_MAP.fetch(feature_name.to_sym, PASSTHROUGH_OPTIONS)
         klass.build(config, contents)
       end
     end

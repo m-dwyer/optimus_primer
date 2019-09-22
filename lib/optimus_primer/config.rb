@@ -20,7 +20,7 @@ module OptimusPrimer
       def load_config(config)
         options = Options.new
         options.source = config
-        options.load_options
+        options.load_options(config)
       end
 
       def current_mode_path
