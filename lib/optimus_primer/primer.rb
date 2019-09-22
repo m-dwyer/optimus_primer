@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-require_relative 'pci'
 require 'fileutils'
+require_relative 'pci'
+require_relative 'options_builder'
 
 module OptimusPrimer
   class Error < StandardError; end
@@ -35,7 +36,7 @@ module OptimusPrimer
       # create/remove blacklist file
       if enable
         $stdout.puts "Copying blacklist conf #{@config[:nvidia][:blacklist_conf]} to #{@config[:nvidia][:blacklist_file]}"
-        copy_file(@config[:nvidia][:blacklist_conf], @config[:nvidia][:blacklist_file]) if @config[:nvidia][:blacklist_conf]
+        write_options(:nvidia, :blacklist_conf, @config[:nvidia][:blacklist_file]) if @config[:nvidia][:blacklist_conf]
       else
         $stdout.puts "Removing blacklist file #{@config[:nvidia][:blacklist_file]}"
         File.delete(@config[:nvidia][:blacklist_file]) if File.exists? @config[:nvidia][:blacklist_file]
@@ -48,7 +49,7 @@ module OptimusPrimer
         $stdout.puts "Enabling nvidia power management on #{nvidia_card[:pci_domain_bdf]}"
         @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'auto')
         $stdout.puts "Enabling nvidia power management udev rule"
-        copy_file(@config[:nvidia][:power_udev_conf], @config[:nvidia][:power_udev_file])
+        write_options(:nvidia, :power_udev_conf, @config[:nvidia][:power_udev_file])
       else
         $stdout.puts "Disabling nvidia power management"
         @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'on')
@@ -61,16 +62,16 @@ module OptimusPrimer
       case mode
       when 'intel'
         $stdout.puts "Copying intel config #{@config[:intel][:xorg_conf]} to #{@config[:intel][:xorg_file]}"
-        copy_file(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
+        write_options(:intel, :xorg_conf, @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
 
         $stdout.puts "Removing nvidia config #{@config[:nvidia][:xorg_file]}"
         File.delete(@config[:nvidia][:xorg_file]) if File.exists? @config[:nvidia][:xorg_file]
       when 'nvidia'
         $stdout.puts "Copying intel config #{@config[:intel][:xorg_conf]} to #{@config[:intel][:xorg_file]}"
-        copy_file(@config[:intel][:xorg_conf], @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
+        write_options(:intel, :xorg_conf, @config[:intel][:xorg_file]) if @config[:intel][:xorg_conf]
 
         $stdout.puts "Copying nvidia config #{@config[:nvidia][:xorg_conf]} to #{@config[:nvidia][:xorg_file]}"
-        copy_file(@config[:nvidia][:xorg_conf], @config[:nvidia][:xorg_file]) if @config[:nvidia][:xorg_conf]
+        write_options(:nvidia, :xorg_conf, @config[:nvidia][:xorg_file]) if @config[:nvidia][:xorg_conf]
       end
 
       def write_current_mode(mode)
@@ -78,9 +79,15 @@ module OptimusPrimer
       end
     end
 
-    def copy_file(src, dest)
-      FileUtils.mkdir_p(File.dirname(dest))
-      FileUtils.copy_file(src, dest)
+    def write_options(*options_key, dest)
+      contents = File.read(@config.dig(*options_key))
+      built_options = OptionsBuilder.build_options(*options_key, @config, contents)
+      write_file(built_options.render, dest)
+    end
+
+    def write_file(contents, dest_file)
+      FileUtils.mkdir_p(File.dirname(dest_file))
+      File.write(dest_file, contents)
     end
   end
 end
