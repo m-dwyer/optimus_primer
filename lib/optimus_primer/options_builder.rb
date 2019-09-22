@@ -6,8 +6,7 @@ require_relative 'options/nvidia_gpu_remove_options'
 module OptimusPrimer
   class OptionsBuilder
     FEATURE_OPTIONS_MAP = {
-      :gpu => NvidiaUDevOptions,
-      :other => NvidiaUDevOptions,
+      :power_management => NvidiaUDevOptions,
       :acpi => NvidiaAcpiOptions,
       :pci_removal => NvidiaGpuRemoveOptions
     }.freeze
