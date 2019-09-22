@@ -5,8 +5,8 @@ module OptimusPrimer
     include OptionsTemplate
   
     def build_options
-      @disable_other_devices = @all_config.dig(:nvidia, :disable_other_devices)
-      @enable_gpu_power_management = @all_config.dig(:nvidia, :enable_gpu_power_management)
+      @other_power_management = @all_config.dig(:nvidia, :power_management, :other)
+      @gpu_power_management = @all_config.dig(:nvidia, :power_management, :gpu)
     end
   end
 end

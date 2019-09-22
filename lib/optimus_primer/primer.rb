@@ -20,7 +20,7 @@ module OptimusPrimer
       when 'intel'
         blacklist_nvidia
         set_xorg_config('intel')
-        enable_power_management
+        enable_power_management if @config[:nvidia][:power_management][:enabled]
         write_current_mode('intel')
       when 'nvidia'
         blacklist_nvidia(false)
