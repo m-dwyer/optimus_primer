@@ -11,8 +11,6 @@ module OptimusPrimer
   class Primer
     def initialize(config)
       @config = config
-      @pci = Pci.new
-      @intel_displays, @nvidia_displays = @pci.display_controllers
     end
 
     def switch(mode)
@@ -44,17 +42,19 @@ module OptimusPrimer
     end
 
     def enable_power_management(enable = true)
-      nvidia_card = @nvidia_displays[0]
       if enable
-        $stdout.puts "Enabling nvidia power management on #{nvidia_card[:pci_domain_bdf]}"
-        @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'auto')
         $stdout.puts "Enabling nvidia power management udev rule"
         write_options(:nvidia, :power_udev_conf, @config[:nvidia][:power_udev_file])
+        $stdout.puts "Turning off nvidia GPU via ACPI call"
+        write_options(:nvidia, :power_management, :acpi_call_conf, @config[:nvidia][:power_management][:acpi_call_file]) if @config[:nvidia][:power_management][:acpi]
+        write_options(:nvidia, :power_management, :acpi_call_set_conf, @config[:nvidia][:power_management][:acpi_call_set_file]) if @config[:nvidia][:power_management][:acpi]
+        write_options(:nvidia, :power_management, :pci_remove_conf, @config[:nvidia][:power_management][:pci_remove_file]) if @config[:nvidia][:power_management][:pci_remove]
       else
-        $stdout.puts "Disabling nvidia power management"
-        @pci.write_pci_path(nvidia_card[:pci_domain_bdf], Pci::POWER_PATH, 'on')
         $stdout.puts "Disabling nvidia power management udev rule"
         File.delete(@config[:nvidia][:power_udev_file]) if File.exists? @config[:nvidia][:power_udev_file]
+        File.delete(@config[:nvidia][:power_management][:acpi_call_file]) if File.exists? @config[:nvidia][:power_management][:acpi_call_file]
+        File.delete(@config[:nvidia][:power_management][:acpi_call_set_file]) if File.exists? @config[:nvidia][:power_management][:acpi_call_set_file]
+        File.delete(@config[:nvidia][:power_management][:pci_remove_file]) if File.exists? @config[:nvidia][:power_management][:pci_remove_file]
       end
     end
 
