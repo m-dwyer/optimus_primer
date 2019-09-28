@@ -15,11 +15,11 @@ module OptimusPrimer
       case mode
       when 'intel'
         blacklist_nvidia
-        set_xorg_config('intel')
+        set_xorg_config(:intel)
         set_power_management(true)
       when 'nvidia'
         blacklist_nvidia(false)
-        set_xorg_config('nvidia')
+        set_xorg_config(:nvidia)
         set_power_management(false)
       end
     end
