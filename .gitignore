@@ -6,5 +6,5 @@
 /pkg/
 /spec/reports/
 /tmp/
-/installed_conf/
+/config/dev/installed_conf/
 *.gem
