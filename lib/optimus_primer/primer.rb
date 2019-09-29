@@ -18,11 +18,13 @@ module OptimusPrimer
         set_xorg_config(:intel)
         set_power_management(true)
         set_acpi(true)
+        set_pci_removal(true)
       when 'nvidia'
         blacklist_nvidia(false)
         set_xorg_config(:nvidia)
         set_power_management(false)
         set_acpi(false)
+        set_pci_removal(false)
       end
     end
 
@@ -50,6 +52,10 @@ module OptimusPrimer
 
     def set_acpi(enable = true)
       FeatureManager.toggle_feature(:acpi, @config, enable)
+    end
+
+    def set_pci_removal(enable = true)
+      FeatureManager.toggle_feature(:pci_removal, @config, enable)
     end
   end
 end
