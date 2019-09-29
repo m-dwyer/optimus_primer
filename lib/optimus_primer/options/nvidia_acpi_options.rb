@@ -5,7 +5,7 @@ module OptimusPrimer
     include OptionsTemplate
     
     def build_options
-      @acpi_method = @all_config.dig(:nvidia, :power_management, :acpi_method)
+      @acpi_method = @all_config.dig(:nvidia, :acpi, :acpi_method)
     end
   end
 end

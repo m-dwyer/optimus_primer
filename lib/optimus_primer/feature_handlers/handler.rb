@@ -14,12 +14,11 @@ module OptimusPrimer
 
         def initialize(all_config)
           @all_config = all_config
+          @feature_config = @all_config.dig(*self.class::FEATURE_PATH)
         end
 
         def handle(enable = true)
           puts "#{enable} for #{self.class}"
-
-          @feature_config = @all_config.dig(*self.class::FEATURE_PATH)
 
           return if @feature_config.nil? or !@feature_config[:enabled]
 

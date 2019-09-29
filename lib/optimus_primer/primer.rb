@@ -17,10 +17,12 @@ module OptimusPrimer
         blacklist_nvidia
         set_xorg_config(:intel)
         set_power_management(true)
+        set_acpi(true)
       when 'nvidia'
         blacklist_nvidia(false)
         set_xorg_config(:nvidia)
         set_power_management(false)
+        set_acpi(false)
       end
     end
 
@@ -44,6 +46,10 @@ module OptimusPrimer
 
     def set_power_management(enable = true)
       FeatureManager.toggle_feature(:power_management, @config, enable)
+    end
+
+    def set_acpi(enable = true)
+      FeatureManager.toggle_feature(:acpi, @config, enable)
     end
   end
 end
