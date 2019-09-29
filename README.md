@@ -14,9 +14,9 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
+Or install it yourself for system-wide use, along with required config files using:
 
-    $ gem install optimus_primer
+    # make
 
 ## Usage
 
