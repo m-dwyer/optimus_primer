@@ -28,22 +28,22 @@ module OptimusPrimer
 
     def blacklist_nvidia(enable = true)
       # create/remove blacklist file
-      FeatureManager.toggle_feature(:nvidia, :blacklisting, enable, @config)
+      FeatureManager.toggle_feature(:blacklisting, @config, enable)
     end
 
     def set_xorg_config(mode)
       case mode
       when :intel
-        FeatureManager.toggle_feature(:intel, :xorg, true, @config)
-        FeatureManager.toggle_feature(:nvidia, :xorg, false, @config)
+        FeatureManager.toggle_feature(:intel_xorg, @config, true)
+        FeatureManager.toggle_feature(:nvidia_xorg, @config, false)
       when :nvidia
-        FeatureManager.toggle_feature(:intel, :xorg, true, @config)
-        FeatureManager.toggle_feature(:nvidia, :xorg, true, @config)
+        FeatureManager.toggle_feature(:intel_xorg, @config, true)
+        FeatureManager.toggle_feature(:nvidia_xorg, @config, true)
       end
     end
 
     def set_power_management(enable = true)
-      FeatureManager.toggle_feature(:nvidia, :power_management, enable, @config)
+      FeatureManager.toggle_feature(:power_management, @config, enable)
     end
   end
 end

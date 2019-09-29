@@ -10,12 +10,11 @@ module OptimusPrimer
       :acpi => NvidiaAcpiOptions,
       :pci_removal => NvidiaGpuRemoveOptions
     }.freeze
-    PASSTHROUGH_OPTIONS = GenericOptions
 
     class << self
-      def build_options(feature_name, config, contents)
-        klass = FEATURE_OPTIONS_MAP.fetch(feature_name.to_sym, PASSTHROUGH_OPTIONS)
-        klass.build(config, contents)
+      def build_options(klass, config, contents)
+        options = klass.build(config, contents)
+        options.render
       end
     end
   end
