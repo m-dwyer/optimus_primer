@@ -38,10 +38,12 @@ module OptimusPrimer
     def set_xorg_config(mode)
       case mode
       when :intel
+        FeatureManager.toggle_feature(:intel_hybrid_xorg, @config, false)
         FeatureManager.toggle_feature(:intel_xorg, @config, true)
         FeatureManager.toggle_feature(:nvidia_xorg, @config, false)
       when :nvidia
-        FeatureManager.toggle_feature(:intel_xorg, @config, true)
+        FeatureManager.toggle_feature(:intel_xorg, @config, false)
+        FeatureManager.toggle_feature(:intel_hybrid_xorg, @config, true)
         FeatureManager.toggle_feature(:nvidia_xorg, @config, true)
       end
     end

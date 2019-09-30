@@ -16,6 +16,7 @@ module OptimusPrimer
       :pci_removal => PciRemovalHandler,
       :power_management => PowerManagementHandler,
       :intel_xorg => IntelXOrgHandler,
+      :intel_hybrid_xorg => IntelHybridXOrgHandler,
       :nvidia_xorg => NvidiaXOrgHandler
     }.freeze
 

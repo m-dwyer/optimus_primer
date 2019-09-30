@@ -7,6 +7,12 @@ module OptimusPrimer
     include Handler
   end
 
+  class IntelHybridXOrgHandler < DefaultHandler
+    FEATURE_PATH = %i[intel hybrid_xorg]
+
+    include Handler
+  end
+
   class NvidiaXOrgHandler < DefaultHandler
     FEATURE_PATH = %i[nvidia xorg]
 
